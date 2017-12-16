@@ -6,26 +6,30 @@ namespace Publisher
 {
     static partial class Program
     {
-        const int SyncPub_SubscribersExpected = 3;    // We wait for 3 subscribers
+        const int SyncPub_SubscribersExpected = 1;    // We wait for 1 subscribers
 
         public static void Main(string[] args)
         {
-            //
-            // Synchronized publisher
-            //
-            // Author: metadings
-            //
 
+            if (args == null || args.Length < 1)
+            {
+                Console.WriteLine("This is a server for our chat (kinda)");
+                Console.WriteLine();
+                args = new string[] { "" };
+            }
+
+            string name = args[0];
+            
             // Socket to talk to clients and
             // Socket to receive signals
             using (var context = new ZContext())
             using (var publisher = new ZSocket(context, ZSocketType.PUB))
-            using (var syncservice = new ZSocket(context, ZSocketType.REP))
+            using (var responder = new ZSocket(context, ZSocketType.REP))
             {
                 publisher.SendHighWatermark = 1100000;
                 publisher.Bind("tcp://*:5561");
 
-                syncservice.Bind("tcp://*:5562");
+                responder.Bind("tcp://*:5562");
 
                 // Get synchronization from subscribers
                 int subscribers = SyncPub_SubscribersExpected;
@@ -34,22 +38,50 @@ namespace Publisher
                     Console.WriteLine("Waiting for {0} subscriber" + (subscribers > 1 ? "s" : string.Empty) + "…", subscribers);
 
                     // - wait for synchronization request
-                    syncservice.ReceiveFrame();
+                    responder.ReceiveFrame();
 
                     // - send synchronization reply
-                    syncservice.Send(new ZFrame());
+                    responder.Send(new ZFrame());
                 }
                 while (--subscribers > 0);
 
-                // Now broadcast exactly 20 updates followed by END
-                Console.WriteLine("Broadcasting messages:");
-                for (int i = 0; i < 20; ++i)
+                while (true)
                 {
-                    Console.WriteLine("Sending {0}…", i);
-                    publisher.Send(new ZFrame(i));
+
+                    // Receive
+                    using (ZFrame request = responder.ReceiveFrame())
+                    {
+                        Console.WriteLine("Received from user: {0} ", request.ReadString());
+                        
+                        // Do some work
+                        Thread.Sleep(1);
+
+                        // Send
+                        string sendText;
+                        sendText = request.ReadString();
+
+                        responder.Send(new ZFrame(name));
+                        publisher.Send(new ZFrame("TEST"));
+                    }
+
+                    /*using (ZFrame frame = publisher.ReceiveFrame())
+                    {
+                        string text = frame.ReadString();
+                    }*/
+                 
+                            
+                    // Now broadcast exactly 20 updates followed by END
+                    /*Console.WriteLine("Broadcasting messages:");
+                    for (int i = 0; i < 20; ++i)
+                    {
+                        Console.WriteLine("Sending {0}…", i);
+                        publisher.Send(new ZFrame(i));
+                    }
+                    publisher.Send(new ZFrame("END"));*/
+
                 }
-                publisher.Send(new ZFrame("END"));
-                Thread.Sleep(10000);
+
+                
             }
         }
     }
