@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ZeroMQ;
 
-
-namespace Examples
+namespace Publisher
 {
     static partial class Program
     {
@@ -14,6 +13,11 @@ namespace Examples
 
         public static void SyncPub(string[] args)
         {
+            //
+            // Synchronized publisher
+            //
+            // Author: metadings
+            //
 
             // Socket to talk to clients and
             // Socket to receive signals

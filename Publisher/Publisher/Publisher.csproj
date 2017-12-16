@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0A64604C-2432-475F-B7E5-32E15E1798E4}</ProjectGuid>
+    <ProjectGuid>{EE407900-45B4-45CE-8701-9A491E96DF7D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>pubsubchat</RootNamespace>
-    <AssemblyName>pubsubchat</AssemblyName>
+    <RootNamespace>Publisher</RootNamespace>
+    <AssemblyName>Publisher</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -48,8 +48,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
