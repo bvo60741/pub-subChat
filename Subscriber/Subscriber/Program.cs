@@ -10,7 +10,7 @@ namespace Examples
 {
     static partial class Subscriber
     {
-        public static void SyncSub(string[] args)
+        public static void main (string[] args)
         {
 
             using (var context = new ZContext())
