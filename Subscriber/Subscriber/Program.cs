@@ -12,10 +12,14 @@ namespace Examples
     {
         public static void Main(string[] args)
         {
+            string UserName;
+            Console.Write("Enter your name: ");
+            UserName = Console.ReadLine();
 
+            
             using (var context = new ZContext())
             using (var subscriber = new ZSocket(context, ZSocketType.SUB))
-            using (var syncclient = new ZSocket(context, ZSocketType.REQ))
+            using (var requester = new ZSocket(context, ZSocketType.REQ))
             {
                 // First, connect our subscriber socket
                 subscriber.Connect("tcp://127.0.0.1:5561");
@@ -25,13 +29,13 @@ namespace Examples
                 Thread.Sleep(1);
 
                 // Second, synchronize with publisher
-                syncclient.Connect("tcp://127.0.0.1:5562");
+                requester.Connect("tcp://127.0.0.1:5562");
 
                 // - send a synchronization request
-                syncclient.Send(new ZFrame());
+                requester.Send(new ZFrame());
 
                 // - wait for synchronization reply
-                syncclient.ReceiveFrame();
+                requester.ReceiveFrame();
 
                 // Third, get our updates and report how many we got
                 int i = 0;
