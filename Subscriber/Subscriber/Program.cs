@@ -35,22 +35,36 @@ namespace Examples
 
                 // Third, get our updates and report how many we got
                 int i = 0;
-                while (true)
+                for (int n = 0; n < 30; ++n)
                 {
-                    using (ZFrame frame = subscriber.ReceiveFrame())
+                    string requestText;
+                    Console.Write("Enter your message: ");
+                    requestText = Console.ReadLine();
+                    Console.WriteLine();
+                    Console.Write("Sending {0}: {1}...", UserName, requestText);
+
+                    // Send
+                    requester.Send(new ZFrame(requestText));
+
+                    // Receive
+                    while (true)
                     {
-                        string text = frame.ReadString();
-                        if (text == "END")
+                        using (ZFrame frame = subscriber.ReceiveFrame())
                         {
-                            break;
+                            string text = frame.ReadString();
+                            if (text == "END")
+                            {
+                                break;
+                            }
+
+                            frame.Position = 0;
+                            Console.WriteLine("Receiving {0}…", frame.ReadInt32());
+
+                            ++i;
                         }
-
-                        frame.Position = 0;
-                        Console.WriteLine("Receiving {0}…", frame.ReadInt32());
-
-                        ++i;
                     }
                 }
+
                 Console.WriteLine("Received {0} updates.", i);
             }
         }
