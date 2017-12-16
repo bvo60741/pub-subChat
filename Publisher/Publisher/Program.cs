@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using ZeroMQ;
 
 namespace Publisher
@@ -11,7 +8,7 @@ namespace Publisher
     {
         const int SyncPub_SubscribersExpected = 3;    // We wait for 3 subscribers
 
-        public static void SyncPub(string[] args)
+        public static void Main(string[] args)
         {
             //
             // Synchronized publisher
@@ -52,6 +49,7 @@ namespace Publisher
                     publisher.Send(new ZFrame(i));
                 }
                 publisher.Send(new ZFrame("END"));
+                Thread.Sleep(10000);
             }
         }
     }
