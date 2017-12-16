@@ -11,7 +11,7 @@ namespace Publisher
     {
         const int SyncPub_SubscribersExpected = 3;    // We wait for 3 subscribers
 
-        public static void SyncPub(string[] args)
+        public static void Main(string[] args)
         {
             //
             // Synchronized publisher
