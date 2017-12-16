@@ -51,8 +51,7 @@ namespace Examples
                     requester.Send(new ZFrame(requestText));
 
                     // Receive
-                    while (true)
-                    {
+
                         using (ZFrame frame = subscriber.ReceiveFrame())
                         {
                             string text = frame.ReadString();
@@ -66,7 +65,7 @@ namespace Examples
 
                             ++i;
                         }
-                    }
+                    
                 }
 
                 Console.WriteLine("Received {0} updates.", i);
