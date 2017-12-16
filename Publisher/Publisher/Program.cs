@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using ZeroMQ;
 
 namespace Publisher
@@ -52,6 +49,7 @@ namespace Publisher
                     publisher.Send(new ZFrame(i));
                 }
                 publisher.Send(new ZFrame("END"));
+                Thread.Sleep(10000);
             }
         }
     }
