@@ -19,7 +19,7 @@ namespace Publisher
             }
 
             string name = args[0];
-            
+
             // Socket to talk to clients and
             // Socket to receive signals
             using (var context = new ZContext())
@@ -27,9 +27,9 @@ namespace Publisher
             using (var responder = new ZSocket(context, ZSocketType.REP))
             {
                 publisher.SendHighWatermark = 1100000;
-                publisher.Bind("tcp://*:5561");
+                publisher.Bind("tcp://*:8080");
 
-                responder.Bind("tcp://*:5562");
+                responder.Bind("tcp://*:8081");
 
                 // Get synchronization from subscribers
                 int subscribers = SyncPub_SubscribersExpected;
@@ -51,25 +51,30 @@ namespace Publisher
                     // Receive
                     using (ZFrame request = responder.ReceiveFrame())
                     {
-                        Console.WriteLine("Received from user: {0} ", request.ReadString());
-                        
-                        // Do some work
-                        Thread.Sleep(1);
+                        using (var message = new ZMessage())
+                        {
+                            Console.WriteLine("Received from user: {0} ", request.ReadString());
 
-                        // Send
-                        string sendText;
-                        sendText = request.ReadString();
+                            // Do some work
+                            Thread.Sleep(1);
 
-                        responder.Send(new ZFrame(name));
-                        publisher.Send(new ZFrame("TEST"));
+                            // Send
+                            string sendText;
+                            sendText = request.ReadString();
+
+                            responder.Send(new ZFrame(name));
+                            message.Add(new ZFrame(request.ReadString()));
+                            publisher.Send(message);
+                        }
+
                     }
 
                     /*using (ZFrame frame = publisher.ReceiveFrame())
                     {
                         string text = frame.ReadString();
                     }*/
-                 
-                            
+
+
                     // Now broadcast exactly 20 updates followed by END
                     /*Console.WriteLine("Broadcasting messages:");
                     for (int i = 0; i < 20; ++i)
@@ -81,7 +86,7 @@ namespace Publisher
 
                 }
 
-                
+
             }
         }
     }
