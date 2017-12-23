@@ -16,7 +16,6 @@ namespace Examples
             Console.Write("Enter your name: ");
             UserName = Console.ReadLine();
 
-
             using (var context = new ZContext())
             using (var subscriber = new ZSocket(context, ZSocketType.SUB))
             using (var requester = new ZSocket(context, ZSocketType.REQ))
@@ -35,32 +34,23 @@ namespace Examples
                 requester.Send(new ZFrame());
 
                 // - wait for synchronization reply
-                // requester.ReceiveFrame();
+                //requester.ReceiveFrame();
 
                 // Third, get our updates and report how many we got
-                //string requestText;
                 while (true)
                 {
-
-                    Console.Write("Enter your message: ");
-                    //requestText = Console.ReadLine();
-                    Console.WriteLine();
-                    //Console.WriteLine("Sending {0}: {1}...", UserName, requestText);
-
+                    
                     // Send
                     using (ZFrame txt = requester.ReceiveFrame())
                     {
                         string requestText;
+                        Console.Write("Enter your message: ");
                         requestText = Console.ReadLine();
+                        Console.WriteLine();
                         requestText = txt.ReadString();
                         Console.WriteLine("Sending {0}: {1}...", UserName, requestText);
                         requester.Send(new ZFrame(requestText));
                     }
-
-
-
-
-
 
                     // Receive
 

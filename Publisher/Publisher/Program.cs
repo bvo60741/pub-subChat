@@ -10,15 +10,8 @@ namespace Publisher
 
         public static void Main(string[] args)
         {
-
-            if (args == null || args.Length < 1)
-            {
-                Console.WriteLine("This is a server for our chat (kinda)");
-                Console.WriteLine();
-                args = new string[] { "" };
-            }
-
-            string name = args[0];
+           Console.WriteLine("This is a server for our chat (kinda)");
+           Console.WriteLine();
 
             // Socket to talk to clients and
             // Socket to receive signals
@@ -62,8 +55,8 @@ namespace Publisher
                             string sendText;
                             sendText = request.ReadString();
 
-                            responder.Send(new ZFrame(name));
-                            message.Add(new ZFrame(request.ReadString()));
+                            responder.Send(new ZFrame(sendText));
+                            message.Add(new ZFrame(sendText));
                             publisher.Send(message);
                         }
 
@@ -85,8 +78,6 @@ namespace Publisher
                     publisher.Send(new ZFrame("END"));*/
 
                 }
-
-
             }
         }
     }
